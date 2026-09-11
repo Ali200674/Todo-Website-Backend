@@ -3,7 +3,6 @@ package com.example.todo.service;
 import com.example.todo.entity.TaskEntity;
 import com.example.todo.repo.TaskRepo;
 import jakarta.transaction.Transactional;
-import org.springframework.scheduling.config.Task;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
