@@ -3,6 +3,9 @@ package com.example.todo.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+/**
+ * An entity class that represents a single task.
+ */
 @Entity
 @Table
 @Data
