@@ -20,26 +20,27 @@ public class TaskService {
         this.taskRepo = taskRepo;
     }
 
+    // Method to return all tasks
     public List<TaskEntity> getAllTasks()
     {
         return taskRepo.findAll();
     }
 
+    // Method to save one task
     public TaskEntity saveOneTask(TaskEntity taskEntity) {
-
         return taskRepo.save(taskEntity);
     }
 
-
+    // Method to remove a task from database by id
     public void removeOneTask(Long id) {
-
-        // Try to find the task in the database, if now found, throw a NoSuchElementException
+        // Try to find the task in the database, if not found, throw a NoSuchElementException
         TaskEntity taskEntity = taskRepo.findById(id).orElseThrow(() -> new NoSuchElementException("Cannot find task from given id"));
 
         // Delete that task entity
         taskRepo.delete(taskEntity);
     }
 
+    // Method to update one task.
     public void updateTask(Long id, TaskEntity taskEntity) {
         TaskEntity taskEntity1 = taskRepo.findById(id).orElseThrow(() -> new NoSuchElementException("Cannot find task from given id"));
 

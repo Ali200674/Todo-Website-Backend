@@ -30,9 +30,6 @@ public class TaskController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/task")
     public TaskEntity saveOneTask(@RequestBody TaskEntity taskEntity) {
-
-        taskService.getAllTasks().forEach(System.out::println);
-
         return taskService.saveOneTask(taskEntity);
     }
 

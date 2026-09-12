@@ -7,7 +7,6 @@ import lombok.Data;
  * An entity class that represents a single task.
  */
 @Entity
-@Table
 @Data
 public class TaskEntity {
 
