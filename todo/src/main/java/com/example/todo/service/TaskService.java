@@ -1,9 +1,11 @@
 package com.example.todo.service;
 
+import com.example.todo.dto.TaskDTO;
 import com.example.todo.entity.TaskEntity;
 import com.example.todo.repo.TaskRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -27,7 +29,10 @@ public class TaskService {
     }
 
     // Method to save one task
-    public TaskEntity saveOneTask(TaskEntity taskEntity) {
+    public TaskEntity saveOneTask(TaskDTO taskDTO) {
+
+        TaskEntity taskEntity = new TaskEntity(taskDTO);
+
         return taskRepo.save(taskEntity);
     }
 
@@ -40,13 +45,12 @@ public class TaskService {
         taskRepo.delete(taskEntity);
     }
 
-    // Method to update one task.
-    public void updateTask(Long id, TaskEntity taskEntity) {
-        TaskEntity taskEntity1 = taskRepo.findById(id).orElseThrow(() -> new NoSuchElementException("Cannot find task from given id"));
+    public void updateTask(Long id, TaskDTO taskDTO) {
+        TaskEntity taskEntity = taskRepo.findById(id).orElseThrow(() -> new NoSuchElementException("Cannot find task from given id"));
 
         // Assuming we did find a task
-        taskEntity1.setTaskCompleted(taskEntity.getTaskCompleted());
+        taskEntity.setTaskCompleted(taskDTO.taskCompleted());
 
-        taskRepo.save(taskEntity1);
+        taskRepo.save(taskEntity);
     }
 }

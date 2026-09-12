@@ -1,6 +1,7 @@
 package com.example.todo.controller;
 
 
+import com.example.todo.dto.TaskDTO;
 import com.example.todo.entity.TaskEntity;
 import com.example.todo.service.TaskService;
 import org.springframework.http.HttpStatus;
@@ -29,8 +30,9 @@ public class TaskController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/task")
-    public TaskEntity saveOneTask(@RequestBody TaskEntity taskEntity) {
+    public TaskEntity saveOneTask(@RequestBody TaskDTO taskEntity) {
         return taskService.saveOneTask(taskEntity);
+
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -41,7 +43,9 @@ public class TaskController {
 
     
     @PatchMapping("/task/{taskId}")
-    public void updateTask(@PathVariable Long taskId, @RequestBody TaskEntity taskEntity) {
+    public void updateTask(@PathVariable Long taskId, @RequestBody TaskDTO taskEntity) {
+
+
         taskService.updateTask(taskId, taskEntity);
     }
 }
