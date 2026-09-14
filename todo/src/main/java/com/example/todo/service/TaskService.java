@@ -45,6 +45,7 @@ public class TaskService {
         taskRepo.delete(taskEntity);
     }
 
+    // This method is only used to update the taskCompleted variable.
     public void updateTask(Long id, TaskDTO taskDTO) {
         TaskEntity taskEntity = taskRepo.findById(id).orElseThrow(() -> new NoSuchElementException("Cannot find task from given id"));
 

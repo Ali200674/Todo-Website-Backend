@@ -13,6 +13,8 @@ import java.time.LocalDate;
 @Data
 public class TaskEntity {
 
+    public TaskEntity() {}
+
     public TaskEntity(TaskDTO taskDTO) {
         this.taskName = taskDTO.taskName();
         this.taskDescription = taskDTO.taskDescription();
