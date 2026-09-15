@@ -51,7 +51,13 @@ public class TaskController {
     
     @PatchMapping("/task/{taskId}")
     @Operation(summary = "Updates a task completion only.")
-    public void updateTask(@PathVariable Long taskId, @RequestBody @Valid TaskDTO taskEntity) {
-        taskService.updateTask(taskId, taskEntity);
+    public void updateTaskCompletion(@PathVariable Long taskId, @RequestBody Boolean taskCompleted) {
+        taskService.updateTaskCompletion(taskId, taskCompleted);
+    }
+
+    @PutMapping("/task/{taskId}")
+    @Operation(summary = "Updates or replaces the whole task")
+    public void updateEntireTask(@PathVariable Long taskId, @RequestBody @Valid TaskDTO taskDTO) {
+         taskService.updateEntireTask(taskId, taskDTO);
     }
 }

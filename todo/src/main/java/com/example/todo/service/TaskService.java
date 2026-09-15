@@ -46,11 +46,26 @@ public class TaskService {
     }
 
     // This method is only used to update the taskCompleted variable.
-    public void updateTask(Long id, TaskDTO taskDTO) {
+    public void updateTaskCompletion(Long id, Boolean taskCompletionStatus) {
         TaskEntity taskEntity = taskRepo.findById(id).orElseThrow(() -> new NoSuchElementException("Cannot find task from given id"));
 
         // Assuming we did find a task
+        taskEntity.setTaskCompleted(taskCompletionStatus);
+
+        taskRepo.save(taskEntity);
+    }
+
+    // This method will update the whole task
+    public void updateEntireTask(Long id, TaskDTO taskDTO) {
+
+        // Try to find the task to update in the database
+        TaskEntity taskEntity = taskRepo.findById(id).orElseThrow(() -> new NoSuchElementException("Task was not found in database with given id"));
+
+        // Assuming we have the task
+        taskEntity.setTaskName(taskDTO.taskName());
+        taskEntity.setTaskDescription(taskDTO.taskDescription());
         taskEntity.setTaskCompleted(taskDTO.taskCompleted());
+        taskEntity.setTaskDueDate(taskDTO.taskDueDate());
 
         taskRepo.save(taskEntity);
     }
