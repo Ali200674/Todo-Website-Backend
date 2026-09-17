@@ -69,4 +69,6 @@ public class TaskService {
 
         taskRepo.save(taskEntity);
     }
+
+    public List<TaskEntity> getAllTasksBasedOnSearchResult(String search) { return taskRepo.findByTaskName(search); }
 }

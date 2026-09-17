@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,8 +30,11 @@ public class TaskController {
 
     @GetMapping("/tasks")
     @Operation(summary = "Gets all of the tasks from the database")
-    public List<TaskEntity> getAllTasks() {
-        return taskService.getAllTasks();
+    public List<TaskEntity> getAllTasks(@RequestParam(required = false) String search) {
+
+
+
+        return !StringUtils.hasText(search) ? taskService.getAllTasks() : taskService.getAllTasksBasedOnSearchResult(search);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -38,12 +42,11 @@ public class TaskController {
     @Operation(summary = "Saves a task into the database")
     public TaskEntity saveOneTask(@RequestBody @Valid TaskDTO taskEntity) {
         return taskService.saveOneTask(taskEntity);
-
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/task/{taskId}")
-    @Operation(summary = "Removes a task fro database based on it's id")
+    @Operation(summary = "Removes a task from database based on it's id")
     public void deleteOneTask(@PathVariable Long taskId) {
         taskService.removeOneTask(taskId);
     }
@@ -60,4 +63,6 @@ public class TaskController {
     public void updateEntireTask(@PathVariable Long taskId, @RequestBody @Valid TaskDTO taskDTO) {
          taskService.updateEntireTask(taskId, taskDTO);
     }
+
+
 }
