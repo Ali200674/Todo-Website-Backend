@@ -1,7 +1,9 @@
 package com.example.todo.service;
 
 import com.example.todo.dto.TaskDTO;
+import com.example.todo.dto.TaskFiltersDTO;
 import com.example.todo.entity.TaskEntity;
+import com.example.todo.entity.TaskStatus;
 import com.example.todo.repo.TaskRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -46,13 +48,15 @@ public class TaskService {
     }
 
     // This method is only used to update the taskCompleted variable.
-    public void updateTaskCompletion(Long id, Boolean taskCompletionStatus) {
+    public void updateTaskCompletion(Long id, TaskStatus taskCompletionStatus) {
         TaskEntity taskEntity = taskRepo.findById(id).orElseThrow(() -> new NoSuchElementException("Cannot find task from given id"));
 
         // Assuming we did find a task
-        taskEntity.setTaskCompleted(taskCompletionStatus);
+        taskEntity.setTaskStatus(taskCompletionStatus);
 
-        taskRepo.save(taskEntity);
+        TaskEntity x = taskRepo.save(taskEntity);
+
+        System.out.println(x);
     }
 
     // This method will update the whole task
@@ -64,11 +68,16 @@ public class TaskService {
         // Assuming we have the task
         taskEntity.setTaskName(taskDTO.taskName());
         taskEntity.setTaskDescription(taskDTO.taskDescription());
-        taskEntity.setTaskCompleted(taskDTO.taskCompleted());
+        taskEntity.setTaskStatus(taskDTO.taskStatus());
         taskEntity.setTaskDueDate(taskDTO.taskDueDate());
 
         taskRepo.save(taskEntity);
     }
 
     public List<TaskEntity> getAllTasksBasedOnSearchResult(String search) { return taskRepo.findByTaskName(search); }
+
+    public List<TaskEntity> getAllTasksBasedOnFilters(TaskFiltersDTO taskFiltersDTO) {
+
+        return taskRepo.findByTaskFilters(taskFiltersDTO);
+    }
 }

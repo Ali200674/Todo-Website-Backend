@@ -19,7 +19,7 @@ public class TaskEntity {
         this.taskName = taskDTO.taskName();
         this.taskDescription = taskDTO.taskDescription();
         this.priorityType = taskDTO.priorityType();
-        this.taskCompleted = taskDTO.taskCompleted();
+        this.taskStatus = taskDTO.taskStatus();
         this.taskDueDate = taskDTO.taskDueDate();
     }
 
@@ -37,7 +37,7 @@ public class TaskEntity {
     private TaskPriorityEnum priorityType;
 
     @Column
-    private Boolean taskCompleted;
+    private TaskStatus taskStatus;
 
     @Column
     private LocalDate taskDueDate;
