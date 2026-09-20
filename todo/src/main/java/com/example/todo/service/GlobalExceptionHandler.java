@@ -1,9 +1,7 @@
 package com.example.todo.service;
 
-import com.example.todo.dto.ErrorDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -36,23 +34,11 @@ public class GlobalExceptionHandler{
     /**
      * Method that handles all MethodArgumentNotValidException errors
      *
-     * @param e The exception thrown
      * @return A ResponseEntity detailing what happened
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorDTO> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-
-        // Get the field that threw the error
-        FieldError info = e.getFieldError();
-
-        // Make a ErrorDTO with the field and message with it
-        ErrorDTO errorDTO = new ErrorDTO(
-                400,
-                info.getField(),
-                info.getDefaultMessage()
-        );
-
-        return ResponseEntity.badRequest().body(errorDTO);
+    public ResponseEntity<String> handleMethodArgumentNotValidException() {
+        return ResponseEntity.badRequest().body("One or more values are blank!");
     }
 }

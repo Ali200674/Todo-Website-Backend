@@ -19,4 +19,4 @@ import java.time.LocalDate;
  * @author Ali Izoyev
  * @version 1.0x
  */
-public record TaskDTO(@NotBlank(message = "Task name cannot be blank!") String taskName, String taskDescription, @NotNull(message = "Priority type cannot be empty!") TaskPriorityEnum priorityType, TaskStatus taskStatus, LocalDate taskDueDate) { }
+public record TaskDTO(@NotBlank String taskName, String taskDescription, @NotNull TaskPriorityEnum priorityType, TaskStatus taskStatus, LocalDate taskDueDate) { }

@@ -13,6 +13,7 @@ import java.time.LocalDate;
  * @version 1.0x
  */
 @Entity
+@Table(name = "tasks")
 @Data
 public class TaskEntity {
 

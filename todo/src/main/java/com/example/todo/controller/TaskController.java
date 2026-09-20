@@ -2,7 +2,6 @@ package com.example.todo.controller;
 
 
 import com.example.todo.dto.TaskDTO;
-import com.example.todo.dto.TaskFiltersDTO;
 import com.example.todo.entity.TaskEntity;
 import com.example.todo.entity.TaskPriorityEnum;
 import com.example.todo.entity.TaskStatus;
@@ -10,6 +9,7 @@ import com.example.todo.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +36,7 @@ public class TaskController {
     }
 
     /**
-     * Method to return all tasks either with or without a search param.
+     * Method to return a Page of TaskEntities with or without a search param
      *
      *
      * @param taskTitleName Used to find tasks based on it's name
@@ -44,13 +44,13 @@ public class TaskController {
      */
     @GetMapping("/tasks")
     @Operation(summary = "Gets all of the tasks from the database")
-    public List<TaskEntity> getAllTasks(@RequestParam(name = "search",required = false) String taskTitleName) {
+    public Page<TaskEntity> getAllTasks(@RequestParam(name = "search",required = false) String taskTitleName) {
         // If the search param is empty, return all tasks, else return all tasks based on search result
         return !StringUtils.hasText(taskTitleName) ? taskService.getAllTasks() : taskService.getAllTasksBasedOnSearchResult(taskTitleName);
     }
 
     /**
-     * Method to get a list of tasks based on the priority, status, and due date of task
+     * Method to get a Page of TaskEntities based on the priority, status, and due date of task
      *
      * @param taskPriorityList A list of priorities
      * @param taskStatuses A list of statuses
@@ -59,11 +59,21 @@ public class TaskController {
      */
     @GetMapping("/tasks/filters")
     @Operation(summary = "Retrieve a list of tasks based on the priority, status, and due date of the task")
-    public List<TaskEntity> getAllTasksBasedOnFilters(@RequestParam(required = false) List<TaskPriorityEnum> taskPriorityList, @RequestParam(required = false)
+    public Page<TaskEntity> getAllTasksBasedOnFilters(@RequestParam(required = false) List<TaskPriorityEnum> taskPriorityList, @RequestParam(required = false)
     List<TaskStatus> taskStatuses, @RequestParam(required = false)LocalDate taskDueDate) {
-        TaskFiltersDTO taskFiltersDTO = new TaskFiltersDTO(taskPriorityList, taskStatuses, taskDueDate);
-        System.out.println(taskFiltersDTO);
         return taskService.getAllTasksBasedOnFilters(taskPriorityList, taskStatuses, taskDueDate);
+    }
+
+    /**
+     * Method to return a Page of TaskEntities based on the page
+     *
+     * @param page The page as an Integer
+     * @return A Page of TaskEntities based on the page variable
+     */
+    @GetMapping("/tasks/page/{page}")
+    @Operation()
+    public Page<TaskEntity> getAllContentBasedOnPage(@PathVariable Integer page) {
+        return taskService.getAllContentBasedOnPage(page);
     }
 
     /**

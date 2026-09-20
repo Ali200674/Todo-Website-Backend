@@ -3,6 +3,8 @@ package com.example.todo.repo;
 import com.example.todo.entity.TaskEntity;
 import com.example.todo.entity.TaskPriorityEnum;
 import com.example.todo.entity.TaskStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,22 +18,23 @@ import java.util.List;
 public interface TaskRepo extends JpaRepository<TaskEntity, Long> {
 
     /**
-     * Method that returns a task by its name
+     * Method that returns tasks based on the task name using pagination
      *
      * @param taskName The name of the task we will query with
-     * @return A list of all the tasks that equals the taskName
+     * @param pageable pagination information
+     * @return A page containing tasks that matches the specific name.
      */
-    List<TaskEntity> findByTaskName(String taskName);
+    Page<TaskEntity> findByTaskNameContaining(String taskName, Pageable pageable);
 
 
     /**
-     * Method that gets all tasks based on the filters passed through.
-     * Passing in a null with exclude the filter.
+     * Method that returns tasks base on the filters passed in using pagination
+     * Passing in a null value for any of the values will exclude it from the query.
      *
      * @param taskPriorityList A list of priorities
      * @param taskStatuses A list of statuses
      * @param taskDueDate A date object that represents the due date of a task
-     * @return A list of all the tasks that equal all the filters given
+     * @return A page containing tasks based on the filters passed
      */
     @Query("""
     SELECT t FROM TaskEntity t
@@ -39,7 +42,7 @@ public interface TaskRepo extends JpaRepository<TaskEntity, Long> {
      AND (:taskStatuses IS NULL OR t.taskStatus IN :taskStatuses)
       AND (:taskDueDate IS NULL OR t.taskDueDate = :taskDueDate)
  """)
-    List<TaskEntity> findByTaskFilters(@Param("priorityList")List<TaskPriorityEnum> taskPriorityList,
-                                       @Param("taskStatuses")List<TaskStatus> taskStatuses, @Param("taskDueDate")LocalDate taskDueDate);
+    Page<TaskEntity> findByTaskFilters(@Param("priorityList")List<TaskPriorityEnum> taskPriorityList,
+                                       @Param("taskStatuses")List<TaskStatus> taskStatuses, @Param("taskDueDate")LocalDate taskDueDate, Pageable pageable);
 
 }

@@ -6,6 +6,8 @@ import com.example.todo.entity.TaskPriorityEnum;
 import com.example.todo.entity.TaskStatus;
 import com.example.todo.repo.TaskRepo;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -25,18 +27,20 @@ import java.util.NoSuchElementException;
 public class TaskService {
     private final TaskRepo taskRepo;
 
+    public int amountOfTasks = 4;
+
     public TaskService(TaskRepo taskRepo) {
         this.taskRepo = taskRepo;
     }
 
     /**
-     * Method to return every single task in the database
+     * Method to get tasks based using pagination
      *
-     * @return A list of all tasks in the database
+     * @return The tasks from the database using pagination
      */
-    public List<TaskEntity> getAllTasks()
+    public Page<TaskEntity> getAllTasks()
     {
-        return taskRepo.findAll();
+        return taskRepo.findAll(PageRequest.of(0, amountOfTasks));
     }
 
     /**
@@ -99,31 +103,34 @@ public class TaskService {
     }
 
     /**
-     * Method to get all tasks based on the search result sent.
-     * Does not return tasks that includes the search result.
-     * The task name (what it is being compared against) has to match the search result exactly.
+     * Method that returns tasks based on the task name using pagination.
+     * Returns tasks based on if the task name contains the search result, not based on if it's exact.
      *
      * @param search The search result
      * @return A list of tasks that has the title exactly match the search result
      */
-    public List<TaskEntity> getAllTasksBasedOnSearchResult(String search) { return taskRepo.findByTaskName(search); }
+    public Page<TaskEntity> getAllTasksBasedOnSearchResult(String search) { return taskRepo.findByTaskNameContaining(search, PageRequest.of(0, amountOfTasks)); }
 
 
     /**
-     * Method to get a list of tasks based on variables (filters)
+     * Method to get a list of tasks based on variables (filters) using pagination
      *
      * @param taskPriorityList A list of priority types
      * @param taskStatuses A list of status types
      * @param taskDueDate A date on when the task is due
-     * @return A list of all the tasks based on the param variables
+     * @return A list of all the tasks based on the param variables using pagination.
      */
-    public List<TaskEntity> getAllTasksBasedOnFilters(List<TaskPriorityEnum> taskPriorityList,
+    public Page<TaskEntity> getAllTasksBasedOnFilters(List<TaskPriorityEnum> taskPriorityList,
     List<TaskStatus> taskStatuses, LocalDate taskDueDate) {
 
         // If the lists are empty, turn them into null. So that they will not be used in filtering
         if (CollectionUtils.isEmpty(taskPriorityList)) { taskPriorityList = null; }
         if (CollectionUtils.isEmpty(taskStatuses)) { taskStatuses = null; }
 
-        return taskRepo.findByTaskFilters(taskPriorityList, taskStatuses, taskDueDate);
+        return taskRepo.findByTaskFilters(taskPriorityList, taskStatuses, taskDueDate, PageRequest.of(0, amountOfTasks));
+    }
+
+    public Page<TaskEntity> getAllContentBasedOnPage(Integer pageNum) {
+        return taskRepo.findAll(PageRequest.of(pageNum, 4));
     }
 }
