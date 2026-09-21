@@ -36,17 +36,16 @@ public class TaskController {
     }
 
     /**
-     * Method to return a Page of TaskEntities with or without a search param
-     *
+     * Method get a paginated list of tasks, depending on if there is a search filter passed through or not
      *
      * @param taskTitleName Used to find tasks based on it's name
      * @return A list of either every task in the database normally or by the search result
      */
     @GetMapping("/tasks")
-    @Operation(summary = "Gets all of the tasks from the database")
-    public Page<TaskEntity> getAllTasks(@RequestParam(name = "search",required = false) String taskTitleName) {
-        // If the search param is empty, return all tasks, else return all tasks based on search result
-        return !StringUtils.hasText(taskTitleName) ? taskService.getAllTasks() : taskService.getAllTasksBasedOnSearchResult(taskTitleName);
+    @Operation(summary = "Gets paginated tasks with optional name-based search")
+    public Page<TaskEntity> getTasks(@RequestParam(name = "search",required = false) String taskTitleName, @RequestParam(required = false, defaultValue = "0") Integer pageNum) {
+        // Return paginated tasks normally, or based on search filter
+        return !StringUtils.hasText(taskTitleName) ? taskService.getAllContentBasedOnPage(pageNum) : taskService.getAllTasksBasedOnSearchResult(taskTitleName, pageNum);
     }
 
     /**
@@ -64,17 +63,6 @@ public class TaskController {
         return taskService.getAllTasksBasedOnFilters(taskPriorityList, taskStatuses, taskDueDate);
     }
 
-    /**
-     * Method to return a Page of TaskEntities based on the page
-     *
-     * @param page The page as an Integer
-     * @return A Page of TaskEntities based on the page variable
-     */
-    @GetMapping("/tasks/page/{page}")
-    @Operation()
-    public Page<TaskEntity> getAllContentBasedOnPage(@PathVariable Integer page) {
-        return taskService.getAllContentBasedOnPage(page);
-    }
 
     /**
      * Method to create one task
@@ -85,20 +73,8 @@ public class TaskController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/task")
     @Operation(summary = "Saves a task into the database")
-    public TaskEntity saveOneTask(@RequestBody @Valid TaskDTO taskEntity) {
-        return taskService.saveOneTask(taskEntity);
-    }
-
-    /**
-     * Method to delete a task from database
-     *
-     * @param taskId The id used to find the task to delete
-     */
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/task/{taskId}")
-    @Operation(summary = "Removes a task from database based on it's id")
-    public void deleteOneTask(@PathVariable Long taskId) {
-        taskService.removeOneTask(taskId);
+    public TaskEntity saveTask(@RequestBody @Valid TaskDTO taskEntity) {
+        return taskService.saveTask(taskEntity);
     }
 
     /**
@@ -122,6 +98,18 @@ public class TaskController {
     @PutMapping("/task/{taskId}")
     @Operation(summary = "Updates or replaces the whole task")
     public void updateEntireTask(@PathVariable Long taskId, @RequestBody @Valid TaskDTO taskDTO) {
-         taskService.updateEntireTask(taskId, taskDTO);
+        taskService.updateEntireTask(taskId, taskDTO);
+    }
+
+    /**
+     * Method to delete a task from database
+     *
+     * @param taskId The id used to find the task to delete
+     */
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/task/{taskId}")
+    @Operation(summary = "Removes a task from database based on it's id")
+    public void deleteOneTask(@PathVariable Long taskId) {
+        taskService.removeTaskBasedOnId(taskId);
     }
 }

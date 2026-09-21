@@ -26,7 +26,6 @@ public interface TaskRepo extends JpaRepository<TaskEntity, Long> {
      */
     Page<TaskEntity> findByTaskNameContaining(String taskName, Pageable pageable);
 
-
     /**
      * Method that returns tasks base on the filters passed in using pagination
      * Passing in a null value for any of the values will exclude it from the query.
@@ -38,11 +37,14 @@ public interface TaskRepo extends JpaRepository<TaskEntity, Long> {
      */
     @Query("""
     SELECT t FROM TaskEntity t
-    WHERE (:priorityList IS NULL OR t.priorityType IN :priorityList)
-     AND (:taskStatuses IS NULL OR t.taskStatus IN :taskStatuses)
-      AND (:taskDueDate IS NULL OR t.taskDueDate = :taskDueDate)
+    WHERE (CAST(:taskDueDate AS localdate) IS NULL AND :priorityList IS NULL AND :taskStatuses IS NULL) OR(
+        (:priorityList IS NULL OR t.priorityType IN :priorityList)
+        AND (:taskStatuses IS NULL OR t.taskStatus IN :taskStatuses)
+        AND ((CAST(:taskDueDate AS localdate) IS NULL AND t.taskDueDate IS NULL) OR (CAST(:taskDueDate AS localdate) IS NOT NULL AND t.taskDueDate = :taskDueDate)))
  """)
     Page<TaskEntity> findByTaskFilters(@Param("priorityList")List<TaskPriorityEnum> taskPriorityList,
                                        @Param("taskStatuses")List<TaskStatus> taskStatuses, @Param("taskDueDate")LocalDate taskDueDate, Pageable pageable);
+
+
 
 }
